@@ -1,8 +1,8 @@
 const siteMetadata = {
-  title: "Medium like",
-  author: "Tails Azimuth",
+  title: "Medium ",
+  author: "Chinzorig",
   headerTitle: "TailwindBlog",
-  description: "A blog created with Next.js and Tailwind.css",
+  description: "Sample blog system",
   language: "en-us",
   theme: "system", // system, dark or light
   siteUrl: "https://tailwind-nextjs-starter-blog.vercel.app",
