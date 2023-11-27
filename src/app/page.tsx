@@ -1,9 +1,8 @@
 import Post from "@/components/blog/Post";
-import { Post as TPost } from "@/types/post";
+import { Post as TPost } from "@/types/index";
 
 export default async function Page() {
   const res = await fetch("https://jsonplaceholder.typicode.com/posts");
-
   const posts: TPost[] = await res.json();
 
   return (
