@@ -1,7 +1,7 @@
 import { FunctionComponent } from "react";
 import Post from "@/components/blog/Post";
-
-import { User as TUser, Post as TPost } from "@/types/index";
+import { Post as TPost } from "@prisma/client";
+import { User as TUser } from "@/types/index";
 import { notFound } from "next/navigation";
 
 interface AuthorProps {
