@@ -26,9 +26,12 @@ const formSchema = z.object({
     })
     .min(2)
     .max(50),
-  content: z.string({
-    required_error: "Please enter you text body",
-  }),
+  content: z
+    .string({
+      required_error: "Агуулга оруулна уу",
+    })
+    .min(2)
+    .max(500),
 });
 
 interface BlogFormProps {
