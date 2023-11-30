@@ -1,9 +1,10 @@
 import Post from "@/components/blog/Post";
+import { getPosts } from "@/lib/mongo/posts";
 import { Post as TPost } from "@/types/index";
 
 export default async function Page() {
-  const res = await fetch("https://jsonplaceholder.typicode.com/posts");
-  const posts: TPost[] = await res.json();
+  // const res = await fetch("https://jsonplaceholder.typicode.com/posts");
+  const { posts }: { posts: TPost[] } = await getPosts();
 
   return (
     <div className="divide-y divide-gray-200 dark:divide-gray-700">
