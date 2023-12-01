@@ -1,8 +1,8 @@
 import { FunctionComponent } from "react";
 import Post from "@/components/blog/Post";
-import { Post as TPost } from "@prisma/client";
 import { User as TUser } from "@/types/index";
 import { notFound } from "next/navigation";
+import { getPostById, getPosts } from "@/lib/prisma/posts";
 
 interface AuthorProps {
   authorId: number;
@@ -22,19 +22,14 @@ const Author: FunctionComponent<AuthorProps> = async ({ authorId }) => {
   }
   const user: TUser = await userRes.json();
 
-  const postRes = await fetch(
-    `https://jsonplaceholder.typicode.com/posts?userId=${authorId}`
-  );
+  const { posts = [], error } = await getPosts({
+    where: { userId: authorId },
+    take: 10,
+  });
 
-  if (postRes.status === 404) {
-    notFound();
+  if (error) {
+    throw new Error(error.message);
   }
-
-  if (postRes.status !== 200) {
-    throw new Error("Холбоотой блогуудыг унших үед алдаа гарлаа");
-  }
-
-  const posts: TPost[] = await postRes.json();
 
   return (
     <div className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -49,7 +44,7 @@ const Author: FunctionComponent<AuthorProps> = async ({ authorId }) => {
       <ul className="divide-y divide-gray-200 dark:divide-gray-700">
         {!posts.length && "No posts found."}
         {posts.map((post) => (
-          <Post key={post.id} post={post} />
+          <Post isEditable={true} key={post.id} post={post} />
         ))}
       </ul>
     </div>

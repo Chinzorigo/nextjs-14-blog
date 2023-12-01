@@ -35,16 +35,17 @@ const formSchema = z.object({
 });
 
 interface BlogFormProps {
-  id?: string;
+  post?: Post | null;
 }
 
-const BlogForm: FunctionComponent<BlogFormProps> = ({ id }) => {
+const BlogForm: FunctionComponent<BlogFormProps> = ({ post }) => {
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    // defaultValues: {
-    //   title: "",
-    // },
+    defaultValues: {
+      title: post?.title,
+      content: post?.body,
+    },
   });
 
   // 2. Define a submit handler.
@@ -57,7 +58,7 @@ const BlogForm: FunctionComponent<BlogFormProps> = ({ id }) => {
   return (
     <>
       <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
-        {id ? "Edit blog" : "Write blog"}
+        {post ? "Edit blog" : "Write blog"}
       </h1>
 
       <Form {...form}>
