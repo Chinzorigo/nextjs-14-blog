@@ -1,11 +1,9 @@
 "use client";
 
-import { FunctionComponent } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
+import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-
-import * as z from "zod";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,22 +15,20 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Textarea } from "../ui/textarea";
 import { Post } from "@prisma/client";
+import { addPost, editPost, removePost } from "@/app/actions/posts";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   title: z
     .string({
-      required_error: "Please enter your title",
+      required_error: "Гарчиг оруулна уу",
     })
-    .min(2)
     .max(50),
-  content: z
-    .string({
-      required_error: "Агуулга оруулна уу",
-    })
-    .min(2)
-    .max(500),
+  body: z.string({
+    required_error: "Агуулга оруулна уу",
+  }),
 });
 
 interface BlogFormProps {
@@ -40,28 +36,80 @@ interface BlogFormProps {
 }
 
 const BlogForm: FunctionComponent<BlogFormProps> = ({ post }) => {
-  // 1. Define your form.
+  const router = useRouter();
+
+  const [infoMessage, setInfoMessage] = useState<string | null>(null);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: post?.title,
-      content: post?.body,
+      body: post?.body,
     },
   });
 
-  // 2. Define a submit handler.
+  useEffect(() => {
+    if (!infoMessage) return;
+
+    const timeout = setTimeout(() => {
+      setInfoMessage(null);
+    }, 2000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [infoMessage]);
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values);
+    if (post) {
+      // Update
+      editPost(post.id, values)
+        .then(() => {
+          setInfoMessage("Амжилттай хадгаллаа");
+        })
+        .catch((error) => {
+          setInfoMessage(error.message);
+        });
+    } else {
+      // Create
+      addPost({
+        ...values,
+        userId: 1,
+      })
+        .then(({ post, error }) => {
+          setInfoMessage("Амжилттай хадгаллаа");
+
+          if (error) {
+            throw new Error(error.message);
+          }
+
+          router.push(`/post/edit/${post?.id}`);
+        })
+        .catch((error) => {
+          setInfoMessage(error.message);
+        });
+    }
+  }
+
+  function onDelete() {
+    if (post) {
+      if (confirm("Та устгахыг хүсч байна уу?"))
+        removePost(post.id)
+          .then(() => router.push("/profile"))
+          .catch((error) => setInfoMessage(error.message));
+    }
   }
 
   return (
     <>
-      <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
-        {post ? "Edit blog" : "Write blog"}
+      <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-3xl md:leading-14">
+        {post ? "Блог засах" : "Блог бичих"}
       </h1>
-
+      {infoMessage && (
+        <div className="py-4 text-md text-sky-400">{infoMessage}</div>
+      )}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
@@ -69,12 +117,12 @@ const BlogForm: FunctionComponent<BlogFormProps> = ({ post }) => {
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Title</FormLabel>
+                <FormLabel>Гарчиг</FormLabel>
                 <FormControl>
-                  <Input placeholder="Title is here" {...field} />
+                  <Input {...field} />
                 </FormControl>
                 <FormDescription>
-                  Ttitle should be short and understandable.
+                  Гарчиг ойлгомжтой, товч, тодорхой байх хэрэгтэй.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -82,25 +130,30 @@ const BlogForm: FunctionComponent<BlogFormProps> = ({ post }) => {
           />
           <FormField
             control={form.control}
-            name="content"
+            name="body"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Body</FormLabel>
+                <FormLabel>Агуулга</FormLabel>
                 <FormControl>
-                  <Textarea
-                    className="h-72"
-                    placeholder="Your body text is here"
-                    {...field}
-                  />
+                  <Textarea className="h-96" {...field} />
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button className="float-right" type="submit">
-            Save
-          </Button>
+          <div>
+            <Button
+              onClick={onDelete}
+              className="float-left"
+              type="button"
+              variant={"destructive"}
+            >
+              Устгах
+            </Button>
+            <Button className="float-right" type="submit">
+              Хадгалах
+            </Button>
+          </div>
         </form>
       </Form>
     </>
