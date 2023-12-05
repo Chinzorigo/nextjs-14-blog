@@ -19,6 +19,7 @@ import { Textarea } from "../ui/textarea";
 import { Post } from "@prisma/client";
 import { addPost, editPost, removePost } from "@/app/actions/posts";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const formSchema = z.object({
   title: z
@@ -60,6 +61,12 @@ const BlogForm: FunctionComponent<BlogFormProps> = ({ post }) => {
     };
   }, [infoMessage]);
 
+  const { data: session } = useSession();
+
+  if (!session) {
+    return "Та эхлээд нэвтэрнэ үү";
+  }
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
@@ -76,7 +83,7 @@ const BlogForm: FunctionComponent<BlogFormProps> = ({ post }) => {
       // Create
       addPost({
         ...values,
-        userId: 1,
+        userId: session?.user?.id || "",
       })
         .then(({ post, error }) => {
           setInfoMessage("Амжилттай хадгаллаа");

@@ -1,36 +1,22 @@
 import { FunctionComponent } from "react";
 import Post from "@/components/blog/Post";
-import { User as TUser } from "@/types/index";
-import { notFound } from "next/navigation";
-import { getPostById, getPosts } from "@/lib/prisma/posts";
+import { getPosts } from "@/lib/prisma/posts";
+import { DefaultUser } from "next-auth";
 
 interface AuthorProps {
-  authorId: number;
+  user: DefaultUser;
+  isEditable?: boolean;
 }
 
-const Author: FunctionComponent<AuthorProps> = async ({ authorId }) => {
-  const userRes = await fetch(
-    `https://jsonplaceholder.typicode.com/users/${authorId}`
-  );
-
-  if (userRes.status === 404) {
-    notFound();
-  }
-
-  if (userRes.status !== 200) {
-    throw new Error("Хэрэглэгчийн мэдээллийг унших үед алдаа гарлаа");
-  }
-  const user: TUser = await userRes.json();
-
+const Author: FunctionComponent<AuthorProps> = async ({ user, isEditable }) => {
   const { posts = [], error } = await getPosts({
-    where: { userId: authorId },
+    where: { userId: user.id },
     take: 10,
   });
 
-  if (error) {
-    throw new Error(error.message);
-  }
-
+  // if (error) {
+  //   throw new Error("Холбоотой блогуудыг унших үед алдаа гарлаа");
+  // }
   return (
     <div className="divide-y divide-gray-200 dark:divide-gray-700">
       <div className="space-y-2 pt-6 pb-8 md:space-y-5">
@@ -44,7 +30,7 @@ const Author: FunctionComponent<AuthorProps> = async ({ authorId }) => {
       <ul className="divide-y divide-gray-200 dark:divide-gray-700">
         {!posts.length && "No posts found."}
         {posts.map((post) => (
-          <Post isEditable={true} key={post.id} post={post} />
+          <Post isEditable={isEditable} key={post.id} post={post} />
         ))}
       </ul>
     </div>

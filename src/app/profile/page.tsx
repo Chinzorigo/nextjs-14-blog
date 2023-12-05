@@ -8,12 +8,12 @@ interface PageProps {}
 
 const Page: FunctionComponent<PageProps> = async () => {
   const session = await getServerSession(nextOptions);
-  console.log(session, "session");
+
   if (!session) {
     redirect("/signin");
   }
-  const signInUserId = 1;
-  return <Author authorId={signInUserId} />;
+
+  return <Author user={session.user} isEditable={true} />;
 };
 
 export default Page;

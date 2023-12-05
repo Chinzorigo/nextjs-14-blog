@@ -2,7 +2,7 @@ import siteMetadata from "@/data/siteMetadata";
 import Link from "next/link";
 import Image from "next/image";
 import headerNavLinks from "@/data/headerNavLinks";
-import SignInButton from "./auth/SigninButton";
+import SignInButton from "@/components/auth/SigninButton";
 
 export default async function Header() {
   return (
@@ -32,12 +32,12 @@ export default async function Header() {
       <div className="flex items-center text-base leading-5">
         <div className="hidden sm:block">
           <ul className="flex items-center">
-            {headerNavLinks.map((link) => (
-              <li className="p-4">
+            {headerNavLinks.map((link, index) => (
+              <li className="p-4" key={index}>
                 <Link
                   key={link.title}
                   href={link.href}
-                  className="font-medium text-gray-900 dark:text-gray-100 sm:p-4"
+                  className="font-medium text-gray-900 dark:text-gray-100"
                 >
                   {link.title}
                 </Link>
