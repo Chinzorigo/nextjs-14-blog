@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "../ui/textarea";
 import { Post } from "@prisma/client";
-import { addPost, editPost, removePost } from "@/app/actions/posts";
+import { addPost, editPost, removePost } from "@/actions/posts";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Editor from "@/components/common/Editor";
