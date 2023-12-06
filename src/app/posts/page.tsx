@@ -1,13 +1,26 @@
 import Post from "@/components/blog/Post";
 import Pagination from "@/components/common/Pagination";
 import { getPosts } from "@/lib/prisma/posts";
-import { get } from "http";
 import { FunctionComponent } from "react";
 
-interface PostsProps {}
+interface PostsProps {
+  searchParams: {
+    page?: string;
+  };
+}
+export const POSTS_PER_PAGE = 2;
 
-const Posts: FunctionComponent<PostsProps> = async () => {
-  const { posts, error } = await getPosts({});
+const Posts: FunctionComponent<PostsProps> = async ({ searchParams }) => {
+  const page = parseInt(searchParams.page || "1");
+  const skip = (page - 1) * POSTS_PER_PAGE;
+  const {
+    posts,
+    totalPosts = 0,
+    error,
+  } = await getPosts({ take: POSTS_PER_PAGE, skip });
+
+  const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
+
   if (error) {
     throw error;
   }
@@ -24,7 +37,7 @@ const Posts: FunctionComponent<PostsProps> = async () => {
           <Post key={post.id} post={post} />
         ))}
       </ul>
-      <Pagination totalPages={2} currentPage={1} />
+      <Pagination totalPages={totalPages} currentPage={page} />
     </div>
   );
 };
