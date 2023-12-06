@@ -1,4 +1,4 @@
-import BlogForm from "@/components/blog/Form";
+import BlogForm from "@/components/post/Form";
 import { getPostById } from "@/lib/prisma/posts";
 import { FunctionComponent } from "react";
 

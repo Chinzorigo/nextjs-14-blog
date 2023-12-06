@@ -27,8 +27,8 @@ const formSchema = z.object({
       required_error: "Гарчиг оруулна уу",
     })
     .max(50),
-  body: z.string({
-    required_error: "Агуулга оруулна уу",
+  description: z.string({
+    required_error: "Хураангуй оруулна уу",
   }),
 });
 
@@ -45,7 +45,7 @@ const BlogForm: FunctionComponent<BlogFormProps> = ({ post }) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: post?.title,
-      body: post?.body,
+      description: post?.description,
     },
   });
 
@@ -70,9 +70,16 @@ const BlogForm: FunctionComponent<BlogFormProps> = ({ post }) => {
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
+
+    const body = {
+      ...values,
+      body: "",
+      userId: session?.user?.id || "",
+    };
+
     if (post) {
       // Update
-      editPost(post.id, values)
+      editPost(post.id, body)
         .then(() => {
           setInfoMessage("Амжилттай хадгаллаа");
         })
@@ -81,10 +88,7 @@ const BlogForm: FunctionComponent<BlogFormProps> = ({ post }) => {
         });
     } else {
       // Create
-      addPost({
-        ...values,
-        userId: session?.user?.id || "",
-      })
+      addPost(body)
         .then(({ post, error }) => {
           setInfoMessage("Амжилттай хадгаллаа");
 
@@ -140,7 +144,7 @@ const BlogForm: FunctionComponent<BlogFormProps> = ({ post }) => {
             name="body"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Агуулга</FormLabel>
+                <FormLabel>Хураангуй</FormLabel>
                 <FormControl>
                   <Textarea className="h-96" {...field} />
                 </FormControl>

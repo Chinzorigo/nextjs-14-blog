@@ -1,4 +1,4 @@
-import Post from "@/components/blog/Post";
+import Post from "@/components/post/Post";
 import Pagination from "@/components/common/Pagination";
 import { getPosts } from "@/lib/prisma/posts";
 import { FunctionComponent } from "react";
