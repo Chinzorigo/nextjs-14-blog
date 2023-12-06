@@ -4,7 +4,7 @@ import { Post as TPost } from "@prisma/client";
 
 export default async function Page() {
   const { posts = [], error }: { posts?: TPost[]; error?: any } =
-    await getPosts({});
+    await getPosts({ where: { published: true } });
 
   if (error) {
     throw error;
@@ -21,7 +21,7 @@ export default async function Page() {
         </p>
       </div>
       <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-        {!posts.length && "No posts found."}
+        {!posts.length && <div className="py-4">Пост олдсонгүй.</div>}
         {posts.map((post) => (
           <Post key={post.id} post={post} />
         ))}
