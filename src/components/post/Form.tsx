@@ -20,7 +20,7 @@ import { Post } from "@prisma/client";
 import { addPost, editPost, removePost } from "@/app/actions/posts";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-
+import Editor from "@/components/common/Editor";
 const formSchema = z.object({
   title: z
     .string({
@@ -38,14 +38,14 @@ interface BlogFormProps {
 
 const BlogForm: FunctionComponent<BlogFormProps> = ({ post }) => {
   const router = useRouter();
-
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
+  const [body, setBody] = useState(post?.body || "");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: post?.title,
-      description: post?.description,
+      description: post?.description || "",
     },
   });
 
@@ -71,15 +71,14 @@ const BlogForm: FunctionComponent<BlogFormProps> = ({ post }) => {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
 
-    const body = {
+    const finalValues = {
       ...values,
-      body: "",
-      userId: session?.user?.id || "",
+      body,
     };
 
     if (post) {
       // Update
-      editPost(post.id, body)
+      editPost(post.id, finalValues)
         .then(() => {
           setInfoMessage("Амжилттай хадгаллаа");
         })
@@ -88,7 +87,7 @@ const BlogForm: FunctionComponent<BlogFormProps> = ({ post }) => {
         });
     } else {
       // Create
-      addPost(body)
+      addPost({ ...finalValues, userId: session?.user.id || "" })
         .then(({ post, error }) => {
           setInfoMessage("Амжилттай хадгаллаа");
 
@@ -141,7 +140,7 @@ const BlogForm: FunctionComponent<BlogFormProps> = ({ post }) => {
           />
           <FormField
             control={form.control}
-            name="body"
+            name="description"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Хураангуй</FormLabel>
@@ -152,6 +151,7 @@ const BlogForm: FunctionComponent<BlogFormProps> = ({ post }) => {
               </FormItem>
             )}
           />
+          <Editor body={body} setBody={setBody} />
           <div>
             <Button
               onClick={onDelete}

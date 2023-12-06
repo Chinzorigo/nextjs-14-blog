@@ -5,6 +5,7 @@ export async function getPosts(args: Prisma.PostFindManyArgs) {
   try {
     const result = await prisma.post.findMany(args);
     const totalPosts = await prisma.post.count();
+
     return { posts: result, totalPosts };
   } catch (error: any) {
     return { error };
@@ -26,6 +27,7 @@ export async function getPostById(id: string) {
 export async function createPost(data: Prisma.PostCreateInput) {
   try {
     const result = await prisma.post.create({ data });
+
     return { post: result };
   } catch (error: any) {
     return { error };
@@ -38,6 +40,8 @@ export async function updatePost(id: string, data: Prisma.PostUpdateInput) {
       where: { id },
       data,
     });
+
+    return { post: result };
   } catch (error: any) {
     return { error };
   }
@@ -48,6 +52,8 @@ export async function deletePost(id: string) {
     const result = await prisma.post.delete({
       where: { id },
     });
+
+    return { post: result };
   } catch (error: any) {
     return { error };
   }

@@ -32,7 +32,7 @@ const Posts: FunctionComponent<PostsProps> = async ({ searchParams }) => {
         </h1>
       </div>
       <ul>
-        {posts?.length === 0 && "No posts found"}
+        {!posts?.length && "No posts found."}
         {posts?.map((post) => (
           <Post key={post.id} post={post} />
         ))}
