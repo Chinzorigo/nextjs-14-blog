@@ -27,9 +27,7 @@ const formSchema = z.object({
       required_error: "Гарчиг оруулна уу",
     })
     .max(50),
-  description: z.string({
-    required_error: "Хураангуй оруулна уу",
-  }),
+  description: z.string(),
 });
 
 interface BlogFormProps {

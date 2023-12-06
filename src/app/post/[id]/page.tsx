@@ -1,6 +1,7 @@
 import { FunctionComponent } from "react";
 import { notFound } from "next/navigation";
 import { getPostById, getPosts } from "@/lib/prisma/posts";
+import ReactMarkdown from "react-markdown";
 
 interface PageProps {
   params: {
@@ -46,6 +47,7 @@ const Page: FunctionComponent<PageProps> = async ({ params: { id } }) => {
       <h1 className="text-3xl uppercase pb-2">{post.title}</h1>
       <article>
         <p>{post.body}</p>
+        <ReactMarkdown>{post.body}</ReactMarkdown>
       </article>
     </>
   );

@@ -8,7 +8,7 @@ interface PostsProps {
     page?: string;
   };
 }
-export const POSTS_PER_PAGE = 2;
+const POSTS_PER_PAGE = 3;
 
 const Posts: FunctionComponent<PostsProps> = async ({ searchParams }) => {
   const page = parseInt(searchParams.page || "1");

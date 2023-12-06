@@ -9,7 +9,7 @@ interface ItemProps {
 }
 
 const Item: FunctionComponent<ItemProps> = ({ post, isEditable }) => {
-  const { id, title, body } = post;
+  const { id, title, description } = post;
 
   return (
     <li key={id} className="py-12">
@@ -35,7 +35,7 @@ const Item: FunctionComponent<ItemProps> = ({ post, isEditable }) => {
                 <div className="flex flex-wrap"></div>
               </div>
               <div className="prose max-w-none text-gray-500 dark:text-gray-400">
-                {body}
+                {description}
               </div>
             </div>
             <div className="text-base font-medium leading-6">
