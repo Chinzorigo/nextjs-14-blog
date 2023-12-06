@@ -89,7 +89,8 @@ const BlogForm: FunctionComponent<BlogFormProps> = ({ post }) => {
         });
     } else {
       // Create
-      addPost({ ...finalValues, userId: session?.user.id || "" })
+      fetch("/api/post", { method: "POST", body: JSON.stringify(finalValues) })
+        .then((res) => res.json())
         .then(({ post, error }) => {
           setInfoMessage("Амжилттай хадгаллаа");
 
