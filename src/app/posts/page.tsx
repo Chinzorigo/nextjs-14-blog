@@ -2,6 +2,7 @@ import Post from "@/components/post/Post";
 import Pagination from "@/components/common/Pagination";
 import { getPosts } from "@/lib/prisma/posts";
 import { FunctionComponent } from "react";
+import SearchForm from "@/components/post/SearchForm";
 
 interface PostsProps {
   searchParams: {
@@ -30,6 +31,7 @@ const Posts: FunctionComponent<PostsProps> = async ({ searchParams }) => {
         <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
           Бүх постууд
         </h1>
+        <SearchForm />
       </div>
       <ul>
         {!posts?.length && <div className="py-4">Пост олдсонгүй.</div>}
