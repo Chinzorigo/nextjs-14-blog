@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.0.9",
+    "@giscus/react": "^2.3.0",
     "@heroicons/react": "^2.0.18",
     "@hookform/resolvers": "^3.3.2",
     "@next-auth/prisma-adapter": "^1.0.7",

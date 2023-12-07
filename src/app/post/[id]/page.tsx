@@ -2,6 +2,7 @@ import { FunctionComponent } from "react";
 import { notFound } from "next/navigation";
 import { getPostById, getPosts } from "@/lib/prisma/posts";
 import ReactMarkdown from "react-markdown";
+import Comment from "@/components/post/Comment";
 
 interface PageProps {
   params: {
@@ -49,6 +50,7 @@ const Page: FunctionComponent<PageProps> = async ({ params: { id } }) => {
         <p>{post.body}</p>
         <ReactMarkdown>{post.body}</ReactMarkdown>
       </article>
+      <Comment />
     </>
   );
 };
