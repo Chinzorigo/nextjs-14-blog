@@ -2,11 +2,15 @@
 import useUpdateSearchParams from "@/app/hooks/useUpdateSearchParams";
 import { FunctionComponent, useState } from "react";
 
-interface SearchFormProps {}
+interface SearchFormProps {
+  searchValue?: string;
+}
 
-const SearchForm: FunctionComponent<SearchFormProps> = () => {
-  const [searchValue, setSearchValue] = useState("");
-  const [finalSearchValue, setFinalSearchValue] = useState("");
+const SearchForm: FunctionComponent<SearchFormProps> = (props) => {
+  const [searchValue, setSearchValue] = useState(props.searchValue || "");
+  const [finalSearchValue, setFinalSearchValue] = useState(
+    props.searchValue || ""
+  );
 
   useUpdateSearchParams([{ key: "searchValue", values: finalSearchValue }]);
 
